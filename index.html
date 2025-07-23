@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş Yapay Zeka Araçları Merkezi</title>
+    <title>Yüksek Kaliteli Yapay Zeka Araçları Merkezi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f172a; /* bg-slate-900 */
         }
-        /* Custom scrollbar for better aesthetics */
+        /* Daha estetik bir kaydırma çubuğu için özel stiller */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -27,6 +27,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #64748b; /* bg-slate-500 */
         }
+        /* Kartların ekrana giriş animasyonu */
         .card-enter {
             animation: card-enter 0.5s ease-out forwards;
             opacity: 0;
@@ -38,141 +39,317 @@
                 transform: translateY(0);
             }
         }
+        /* Yukarı Çık butonunun görünme/kaybolma animasyonu */
+        .fade-in {
+            animation: fade-in 0.3s ease-in-out forwards;
+        }
+        .fade-out {
+            animation: fade-out 0.3s ease-in-out forwards;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fade-out {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.8); }
+        }
     </style>
 </head>
 <body class="text-white">
 
     <div class="container mx-auto p-4 md:p-8">
 
-        <!-- Header Section -->
+        <!-- Başlık Bölümü -->
         <header class="text-center mb-8 md:mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500 mb-2">Yapay Zeka Araçları Merkezi</h1>
             <p class="text-slate-400 text-lg">Tüm ücretsiz ve popüler yapay zeka araçları tek bir yerde.</p>
         </header>
 
-        <!-- Search and Filter Section -->
+        <!-- Arama ve Filtreleme Bölümü -->
         <div class="mb-8 md:mb-10 sticky top-4 z-10 bg-slate-900/80 backdrop-blur-sm p-4 rounded-xl border border-slate-700 shadow-lg">
             <div class="flex flex-col gap-4">
-                <!-- Search Input -->
+                <!-- Arama Kutusu -->
                 <div class="relative flex-grow">
-                    <input type="text" id="searchInput" placeholder="Bir araç veya kategori ara (örn: Avatar, Reklam)..." class="w-full bg-slate-800 border border-slate-600 rounded-lg py-3 pl-10 pr-4 focus:ring-2 focus:ring-sky-500 focus:outline-none transition placeholder-slate-500">
-                    <svg class="w-5 h-5 text-slate-400 absolute top-1/2 left-3 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                    </svg>
+                    <label for="searchInput" class="sr-only">Araç Ara</label>
+                    <input type="text" id="searchInput" placeholder="Bir araç veya kategori ara (örn: Avatar, Reklam)..." aria-label="Yapay zeka araçları içinde arama yapın" class="w-full bg-slate-800 border border-slate-600 rounded-lg py-3 pl-10 pr-4 focus:ring-2 focus:ring-sky-500 focus:outline-none transition placeholder-slate-500">
+                    <div class="absolute top-1/2 left-3 -translate-y-1/2 text-slate-400" aria-hidden="true">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                    </div>
                 </div>
-                <!-- Category Filters -->
-                <div id="categoryFilters" class="flex-shrink-0 flex items-center justify-start flex-wrap gap-2">
-                    <!-- Filter buttons will be inserted here by JavaScript -->
+                <!-- Kategori Filtre Butonları -->
+                <div id="categoryFilters" class="flex-shrink-0 flex items-center justify-start flex-wrap gap-2" role="toolbar" aria-label="Araç kategorileri">
+                    <!-- Filtre butonları JavaScript ile buraya eklenecek -->
                 </div>
             </div>
         </div>
 
-        <!-- AI Tools Grid -->
-        <main id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Tool cards will be inserted here by JavaScript -->
+        <!-- Yapay Zeka Araçlarının Gösterileceği Ana Alan -->
+        <main id="toolsContainer" class="flex flex-col gap-y-12">
+            <!-- Araç grupları JavaScript ile buraya eklenecek -->
         </main>
         
-        <!-- Not Found Message -->
+        <!-- Sonuç Bulunamadı Mesajı -->
         <div id="notFoundMessage" class="hidden text-center py-16">
             <h3 class="text-2xl font-semibold text-slate-300">Sonuç Bulunamadı</h3>
-            <p class="text-slate-500 mt-2">Arama kriterlerinize uygun bir araç bulunamadı.</p>
+            <p class="text-slate-500 mt-2">Arama kriterlerinize uygun bir araç bulunamadı. Lütfen filtrelerinizi kontrol edin veya arama teriminizi değiştirin.</p>
         </div>
 
     </div>
 
+    <!-- Yukarı Çık Butonu -->
+    <button id="scrollToTopBtn" aria-label="Sayfanın başına dön" class="hidden fixed bottom-5 right-5 bg-sky-500 text-white p-3 rounded-full shadow-lg hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900 transition-transform hover:scale-110">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+        </svg>
+    </button>
+
     <script>
-        // --- DATA: Expanded List of AI Tools ---
-        const aiTools = [
-            // --- AI Asistanlar & Agent'lar ---
-            {
-                name: "ChatGPT",
-                category: "AI Asistanlar & Agent'lar",
-                description: "OpenAI'dan sohbet tabanlı, çok yönlü ve güçlü bir kişisel yapay zeka asistanı.",
-                url: "https://chat.openai.com/",
-                icon: "https://placehold.co/100x100/10a37f/FFFFFF?text=GPT"
-            },
-            {
-                name: "Google Gemini",
-                category: "AI Asistanlar & Agent'lar",
-                description: "Google'ın çok modlu yapay zeka modeli. Metin, kod, görsel anlama ve üretme yeteneği.",
-                url: "https://gemini.google.com/",
-                icon: "https://placehold.co/100x100/4285F4/FFFFFF?text=GMN"
-            },
-            {
-                name: "Claude AI",
-                category: "AI Asistanlar & Agent'lar",
-                description: "Anthropic tarafından geliştirilen, güvenli ve yardımcı olmaya odaklanmış yapay zeka.",
-                url: "https://claude.ai/",
-                icon: "https://placehold.co/100x100/D97706/FFFFFF?text=CLD"
-            },
-            {
-                name: "Perplexity AI",
-                category: "AI Asistanlar & Agent'lar",
-                description: "Kaynaklar ve alıntılarla doğru cevaplar veren konuşma tabanlı bir arama motoru.",
-                url: "https://www.perplexity.ai/",
-                icon: "https://placehold.co/100x100/000000/FFFFFF?text=PPL"
-            },
-            {
-                name: "AgentGPT",
-                category: "AI Asistanlar & Agent'lar",
-                description: "Kendi otonom yapay zeka agent'larınızı oluşturun, yapılandırın ve görevler için görevlendirin.",
-                url: "https://agentgpt.reworkd.ai/",
-                icon: "https://placehold.co/100x100/1E90FF/FFFFFF?text=AGT"
-            },
-            {
-                name: "MultiOn",
-                category: "AI Asistanlar & Agent'lar",
-                description: "Web sitelerindeki görevleri sizin için otomatikleştiren bir yapay zeka web agent'ı.",
-                url: "https://www.multion.ai/",
-                icon: "https://placehold.co/100x100/FF6347/FFFFFF?text=MON"
-            },
-            // --- Görsel Oluşturma ---
-            {
-                name: "Microsoft Designer",
-                category: "Görsel Oluşturma",
-                description: "DALL-E 3 destekli, metinden yüksek kaliteli görseller ve tasarımlar oluşturur.",
-                url: "https://designer.microsoft.com/",
-                icon: "https://placehold.co/100x100/0078D4/FFFFFF?text=DSN"
-            },
-            {
-                name: "Leonardo.Ai",
-                category: "Görsel Oluşturma",
-                description: "Oyun varlıkları, konsept sanatları ve daha fazlası için sanatçı odaklı görsel üretici.",
-                url: "https://leonardo.ai/",
-                icon: "https://placehold.co/100x100/8A2BE2/FFFFFF?text=LEO"
-            },
-             {
-                name: "Ideogram",
-                category: "Görsel Oluşturma",
-                description: "Metinleri görsellerin içine tutarlı bir şekilde yerleştirmesiyle ünlü görsel oluşturucu.",
-                url: "https://ideogram.ai/",
-                icon: "https://placehold.co/100x100/1A1A1A/FFFFFF?text=IDG"
-            },
-            {
-                name: "SeaArt.ai",
-                category: "Görsel Oluşturma",
-                description: "Cömert ücretsiz kullanım hakkı sunan, anime ve gerçekçi tarzda görseller üreten platform.",
-                url: "https://www.seaart.ai/",
-                icon: "https://placehold.co/100x100/3B82F6/FFFFFF?text=SEA"
-            },
-            // --- Avatar & Reklam Üretimi ---
-            {
-                name: "Canva AI",
-                category: "Avatar & Reklam Üretimi",
-                description: "Tasarım platformu içinde reklam görselleri, sosyal medya gönderileri ve avatarlar oluşturun.",
-                url: "https://www.canva.com/ai-tools/",
-                icon: "https://placehold.co/100x100/00C4CC/FFFFFF?text=CVA"
-            },
-            {
-                name: "Synthesia",
-                category: "Avatar & Reklam Üretimi",
-                description: "Metni profesyonel görünümlü, AI avatarların (mankenlerin) sunduğu videolara dönüştürün.",
-                url: "https://www.synthesia.io/",
-                icon: "https://placehold.co/100x100/4D4DFF/FFFFFF?text=SYN"
-            },
-            {
-                name: "Fotor AI Avatar",
-                category: "Avatar & Reklam Üretimi",
-                description: "Fotoğraflarınızdan veya metinlerden çeşitli stillerde sanatsal ve kurumsal avatarlar oluşturun.",
-                url: "https://www.fotor.com/features/ai-avatar-generator/",
-                icon
+        // Tüm uygulama mantığını bir IIFE (Immediately Invoked Function Expression) içine alarak global scope'u kirletmiyoruz.
+        // Bu, kodun daha modüler ve güvenli olmasını sağlar.
+        (function() {
+            'use strict';
+
+            // --- VERİ KAYNAĞI ---
+            // Uygulamada gösterilecek tüm yapay zeka araçlarının listesi.
+            // Yeni bir araç eklemek için bu listeye yeni bir nesne eklemek yeterlidir.
+            const aiTools = [
+                // Kategori: AI Asistanlar & Agent'lar
+                { id: 1, name: "ChatGPT", category: "AI Asistanlar & Agent'lar", description: "OpenAI'dan sohbet tabanlı, çok yönlü ve güçlü bir kişisel yapay zeka asistanı.", url: "https://chat.openai.com/", icon: "https://placehold.co/100x100/10a37f/FFFFFF?text=GPT" },
+                { id: 2, name: "Google Gemini", category: "AI Asistanlar & Agent'lar", description: "Google'ın çok modlu yapay zeka modeli. Metin, kod, görsel anlama ve üretme yeteneği.", url: "https://gemini.google.com/", icon: "https://placehold.co/100x100/4285F4/FFFFFF?text=GMN" },
+                { id: 3, name: "Claude AI", category: "AI Asistanlar & Agent'lar", description: "Anthropic tarafından geliştirilen, güvenli ve yardımcı olmaya odaklanmış yapay zeka.", url: "https://claude.ai/", icon: "https://placehold.co/100x100/D97706/FFFFFF?text=CLD" },
+                { id: 4, name: "Perplexity AI", category: "AI Asistanlar & Agent'lar", description: "Kaynaklar ve alıntılarla doğru cevaplar veren konuşma tabanlı bir arama motoru.", url: "https://www.perplexity.ai/", icon: "https://placehold.co/100x100/000000/FFFFFF?text=PPL" },
+                { id: 5, name: "AgentGPT", category: "AI Asistanlar & Agent'lar", description: "Kendi otonom yapay zeka agent'larınızı oluşturun, yapılandırın ve görevler için görevlendirin.", url: "https://agentgpt.reworkd.ai/", icon: "https://placehold.co/100x100/1E90FF/FFFFFF?text=AGT" },
+                { id: 6, name: "MultiOn", category: "AI Asistanlar & Agent'lar", description: "Web sitelerindeki görevleri sizin için otomatikleştiren bir yapay zeka web agent'ı.", url: "https://www.multion.ai/", icon: "https://placehold.co/100x100/FF6347/FFFFFF?text=MON" },
+                // Kategori: Görsel Oluşturma
+                { id: 7, name: "Microsoft Designer", category: "Görsel Oluşturma", description: "DALL-E 3 destekli, metinden yüksek kaliteli görseller ve tasarımlar oluşturur.", url: "https://designer.microsoft.com/", icon: "https://placehold.co/100x100/0078D4/FFFFFF?text=DSN" },
+                { id: 8, name: "Leonardo.Ai", category: "Görsel Oluşturma", description: "Oyun varlıkları, konsept sanatları ve daha fazlası için sanatçı odaklı görsel üretici.", url: "https://leonardo.ai/", icon: "https://placehold.co/100x100/8A2BE2/FFFFFF?text=LEO" },
+                { id: 9, name: "Ideogram", category: "Görsel Oluşturma", description: "Metinleri görsellerin içine tutarlı bir şekilde yerleştirmesiyle ünlü görsel oluşturucu.", url: "https://ideogram.ai/", icon: "https://placehold.co/100x100/1A1A1A/FFFFFF?text=IDG" },
+                { id: 10, name: "SeaArt.ai", category: "Görsel Oluşturma", description: "Cömert ücretsiz kullanım hakkı sunan, anime ve gerçekçi tarzda görseller üreten platform.", url: "https://www.seaart.ai/", icon: "https://placehold.co/100x100/3B82F6/FFFFFF?text=SEA" },
+                // Kategori: Avatar & Reklam Üretimi
+                { id: 11, name: "Canva AI", category: "Avatar & Reklam Üretimi", description: "Tasarım platformu içinde reklam görselleri, sosyal medya gönderileri ve avatarlar oluşturun.", url: "https://www.canva.com/ai-tools/", icon: "https://placehold.co/100x100/00C4CC/FFFFFF?text=CVA" },
+                { id: 12, name: "Synthesia", category: "Avatar & Reklam Üretimi", description: "Metni profesyonel görünümlü, AI avatarların (mankenlerin) sunduğu videolara dönüştürün.", url: "https://www.synthesia.io/", icon: "https://placehold.co/100x100/4D4DFF/FFFFFF?text=SYN" },
+                { id: 13, name: "Fotor AI Avatar", category: "Avatar & Reklam Üretimi", description: "Fotoğraflarınızdan veya metinlerden çeşitli stillerde sanatsal ve kurumsal avatarlar oluşturun.", url: "https://www.fotor.com/features/ai-avatar-generator/", icon: "https://placehold.co/100x100/1E88E5/FFFFFF?text=FTR" },
+                { id: 14, name: "AdCreative.ai", category: "Avatar & Reklam Üretimi", description: "Reklam kampanyalarınız için saniyeler içinde yüksek dönüşümlü reklam kreatifleri üretin.", url: "https://www.adcreative.ai/", icon: "https://placehold.co/100x100/F57C00/FFFFFF?text=ADC" },
+                // Kategori: Video & Animasyon
+                { id: 15, name: "RunwayML", category: "Video & Animasyon", description: "Metinden ve resimden video oluşturan, video düzenleme ve montaj için güçlü bir stüdyo.", url: "https://runwayml.com/", icon: "https://placehold.co/100x100/000000/FFFFFF?text=RNW" },
+                { id: 16, name: "Pika", category: "Video & Animasyon", description: "Fikirlerinizi saniyeler içinde yüksek kaliteli videolara dönüştüren popüler bir araç.", url: "https://pika.art/", icon: "https://placehold.co/100x100/FF00FF/FFFFFF?text=PKA" },
+                { id: 17, name: "Luma AI Dream Machine", category: "Video & Animasyon", description: "Metin istemlerinden yüksek kaliteli ve gerçekçi videolar oluşturan yeni nesil bir araç.", url: "https://lumalabs.ai/dream-machine", icon: "https://placehold.co/100x100/6366F1/FFFFFF?text=LMA" },
+                { id: 18, name: "HeyGen", category: "Video & Animasyon", description: "Metinden profesyonel görünümlü, konuşan avatar videoları oluşturur. Ücretsiz planı mevcut.", url: "https://www.heygen.com/", icon: "https://placehold.co/100x100/5D5FEF/FFFFFF?text=HGN" },
+                // Kategori: Ses & Müzik
+                { id: 19, name: "Suno", category: "Ses & Müzik", description: "Basit bir metin istemiyle vokal dahil olmak üzere tam şarkılar oluşturan bir müzik stüdyosu.", url: "https://suno.com/", icon: "https://placehold.co/100x100/FF4500/FFFFFF?text=SNO" },
+                { id: 20, name: "Udio", category: "Ses & Müzik", description: "Farklı türlerde ve vokallerle tam uzunlukta harika şarkılar oluşturan bir diğer popüler araç.", url: "https://www.udio.com/", icon: "https://placehold.co/100x100/1DB954/FFFFFF?text=UDO" },
+                { id: 21, name: "ElevenLabs", category: "Ses & Müzik", description: "Metni insan sesine çok gerçekçi bir şekilde dönüştürür. Ses klonlama ve dublaj için ideal.", url: "https://elevenlabs.io/", icon: "https://placehold.co/100x100/1E1E1E/FFFFFF?text=ELV" },
+                { id: 22, name: "Adobe Podcast", category: "Ses & Müzik", description: "Gürültülü ses kayıtlarını stüdyo kalitesine getiren, podcast üreticileri için harika bir araç.", url: "https://podcast.adobe.com/enhance", icon: "https://placehold.co/100x100/FF0000/FFFFFF?text=ADBE" },
+                // Kategori: Üretkenlik & Sunum
+                { id: 23, name: "Gamma", category: "Üretkenlik & Sunum", description: "Metin istemlerinden saniyeler içinde sunumlar, belgeler ve web sayfaları oluşturur.", url: "https://gamma.app/", icon: "https://placehold.co/100x100/6A0DAD/FFFFFF?text=GMA" },
+                { id: 24, name: "Notion AI", category: "Üretkenlik & Sunum", description: "Notlarınıza, belgelerinize ve projelerinize doğrudan entegre edilmiş bir yazma asistanı.", url: "https://www.notion.so/product/ai", icon: "https://placehold.co/100x100/000000/FFFFFF?text=NTN" },
+                { id: 25, name: "Tome", category: "Üretkenlik & Sunum", description: "Fikirlerinizi görsel olarak etkileyici sunumlara ve hikayelere dönüştüren bir AI aracı.", url: "https://tome.app/", icon: "https://placehold.co/100x100/FF69B4/FFFFFF?text=TME" },
+                // Kategori: Kod & Geliştirici
+                { id: 26, name: "GitHub Copilot", category: "Kod & Geliştirici", description: "Kod düzenleyicinizde yapay zeka destekli bir çift programcı. Öğrenciler için ücretsiz.", url: "https://github.com/features/copilot", icon: "https://placehold.co/100x100/171515/FFFFFF?text=GHC" },
+                { id: 27, name: "Replit", category: "Kod & Geliştirici", description: "Tarayıcı tabanlı, yapay zeka destekli kodlama ortamı. Hızlı prototipleme için ideal.", url: "https://replit.com/", icon: "https://placehold.co/100x100/F26207/FFFFFF?text=RPL" },
+                { id: 28, name: "Cursor", category: "Kod & Geliştirici", description: "Yapay zeka özellikleri ile donatılmış, VS Code tabanlı bir kod düzenleyici.", url: "https://cursor.sh/", icon: "https://placehold.co/100x100/00A4FF/FFFFFF?text=CSR" }
+            ];
+
+            // --- UYGULAMA DURUMU (STATE) ---
+            // Uygulamanın o anki durumunu tutan değişkenler.
+            let activeCategory = 'Tümü';
+
+            // --- DOM ELEMENTLERİ ---
+            // HTML'deki elementlere daha hızlı erişmek için referanslarını değişkenlerde tutuyoruz.
+            // Bu, her seferinde document.getElementById yapmaktan daha performanslıdır.
+            const toolsContainer = document.getElementById('toolsContainer');
+            const searchInput = document.getElementById('searchInput');
+            const categoryFiltersContainer = document.getElementById('categoryFilters');
+            const notFoundMessage = document.getElementById('notFoundMessage');
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+            /**
+             * Belirtilen araçları kategorilere göre gruplayarak ekrana çizen ana fonksiyondur.
+             * @param {Array} toolsToRender - Ekrana çizilecek araç nesnelerinin dizisi.
+             */
+            function renderTools(toolsToRender) {
+                // Her render işleminden önce mevcut içeriği temizliyoruz.
+                toolsContainer.innerHTML = '';
+                
+                // Eğer render edilecek araç yoksa, "Bulunamadı" mesajını göster ve fonksiyondan çık.
+                if (toolsToRender.length === 0) {
+                    notFoundMessage.classList.remove('hidden');
+                    return;
+                } 
+                
+                // Eğer araç varsa, "Bulunamadı" mesajını gizle.
+                notFoundMessage.classList.add('hidden');
+
+                // Araçları kategorilerine göre gruplandırıyoruz.
+                const groupedTools = toolsToRender.reduce((acc, tool) => {
+                    const category = tool.category;
+                    if (!acc[category]) {
+                        acc[category] = [];
+                    }
+                    acc[category].push(tool);
+                    return acc;
+                }, {});
+
+                // Kategori isimlerini alfabetik olarak sıralıyoruz.
+                const sortedCategories = Object.keys(groupedTools).sort();
+                
+                // Performans için bir DocumentFragment oluşturuyoruz. 
+                // Tüm elemanları önce bu fragmana ekleyip, en son tek seferde DOM'a ekleyeceğiz.
+                // Bu, tarayıcının sürekli yeniden çizim yapmasını (reflow) engeller.
+                const fragment = document.createDocumentFragment();
+
+                // Her bir kategori için gruplama ve render işlemi yapıyoruz.
+                sortedCategories.forEach(category => {
+                    // Kategori başlığını oluşturuyoruz.
+                    const heading = document.createElement('h2');
+                    heading.className = 'text-2xl font-bold text-slate-200 border-b-2 border-slate-700 pb-2';
+                    heading.textContent = category;
+                    fragment.appendChild(heading);
+
+                    // Bu kategoriye ait araçlar için bir grid (ızgara) alanı oluşturuyoruz.
+                    const categoryGrid = document.createElement('div');
+                    categoryGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4';
+                    
+                    // Kategori içindeki araçları da alfabetik olarak sıralıyoruz.
+                    const toolsInCategory = groupedTools[category].sort((a, b) => a.name.localeCompare(b.name));
+
+                    toolsInCategory.forEach((tool, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'bg-slate-800 rounded-xl border border-slate-700 p-5 flex flex-col hover:border-sky-500 hover:scale-[1.02] transition-all duration-300 cursor-pointer card-enter';
+                        card.style.animationDelay = `${index * 50}ms`;
+                        card.setAttribute('role', 'button');
+                        card.setAttribute('tabindex', '0');
+                        card.onclick = () => window.open(tool.url, '_blank');
+                        card.onkeydown = (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                window.open(tool.url, '_blank');
+                            }
+                        };
+
+                        card.innerHTML = `
+                            <div class="flex items-center mb-4">
+                                <img src="${tool.icon}" alt="${tool.name} Logosu" class="w-14 h-14 rounded-lg mr-4" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/100x100/1E293B/FFFFFF?text=AI';">
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-100">${tool.name}</h3>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 flex-grow mb-4">${tool.description}</p>
+                            <span class="w-full mt-auto block text-center bg-slate-700 text-slate-300 font-semibold py-2 px-4 rounded-lg group-hover:bg-sky-600 group-hover:text-white transition-colors duration-200">
+                                Aracı Ziyaret Et
+                            </span>
+                        `;
+                        categoryGrid.appendChild(card);
+                    });
+
+                    fragment.appendChild(categoryGrid);
+                });
+                
+                // Tüm oluşturulan içeriği tek seferde ana konteynere ekliyoruz.
+                toolsContainer.appendChild(fragment);
+            }
+
+            /**
+             * Kategori filtre butonlarını oluşturur ve ekrana çizer.
+             */
+            function renderCategoryFilters() {
+                const categories = ['Tümü', ...new Set(aiTools.map(tool => tool.category))];
+                const sortedCategories = ['Tümü', ...categories.filter(c => c !== 'Tümü').sort()];
+
+                categoryFiltersContainer.innerHTML = '';
+                const fragment = document.createDocumentFragment();
+
+                sortedCategories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.textContent = category;
+                    button.dataset.category = category;
+                    button.className = `px-3 py-1.5 md:px-4 md:py-2 text-sm font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
+                        activeCategory === category 
+                        ? 'bg-sky-500 text-white shadow-md' 
+                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                    }`;
+                    button.onclick = () => {
+                        activeCategory = category;
+                        filterAndRender();
+                        renderCategoryFilters(); // Aktif durumu güncellemek için butonları yeniden çiz.
+                    };
+                    fragment.appendChild(button);
+                });
+                categoryFiltersContainer.appendChild(fragment);
+            }
+
+            /**
+             * Arama kutusu ve aktif kategoriye göre araçları filtreler ve yeniden çizer.
+             */
+            function filterAndRender() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let filteredTools = aiTools;
+
+                if (activeCategory !== 'Tümü') {
+                    filteredTools = filteredTools.filter(tool => tool.category === activeCategory);
+                }
+
+                if (searchTerm) {
+                    filteredTools = filteredTools.filter(tool => 
+                        tool.name.toLowerCase().includes(searchTerm) || 
+                        tool.description.toLowerCase().includes(searchTerm) ||
+                        tool.category.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                renderTools(filteredTools);
+            }
+            
+            /**
+             * Sayfa kaydırma durumuna göre "Yukarı Çık" butonunu gösterir veya gizler.
+             */
+            function handleScroll() {
+                if (window.scrollY > 300) {
+                    if (scrollToTopBtn.classList.contains('hidden')) {
+                        scrollToTopBtn.classList.remove('hidden', 'fade-out');
+                        scrollToTopBtn.classList.add('fade-in');
+                    }
+                } else {
+                    if (!scrollToTopBtn.classList.contains('hidden')) {
+                        scrollToTopBtn.classList.remove('fade-in');
+                        scrollToTopBtn.classList.add('fade-out');
+                        // Animasyon bittikten sonra gizle
+                        setTimeout(() => scrollToTopBtn.classList.add('hidden'), 300);
+                    }
+                }
+            }
+
+            /**
+             * Uygulamayı başlatan ana fonksiyondur.
+             */
+            function initialize() {
+                // Hata kontrolü: Gerekli elementler DOM'da var mı?
+                if (!toolsContainer || !searchInput || !categoryFiltersContainer || !notFoundMessage || !scrollToTopBtn) {
+                    console.error("Uygulama için gerekli HTML elementlerinden biri bulunamadı. Lütfen ID'leri kontrol edin.");
+                    return;
+                }
+
+                // Olay dinleyicilerini (Event Listeners) ayarlıyoruz.
+                searchInput.addEventListener('input', filterAndRender);
+                scrollToTopBtn.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                window.addEventListener('scroll', handleScroll);
+
+                // İlk render işlemini yapıyoruz.
+                renderCategoryFilters();
+                // Animasyonların düzgün çalışması için küçük bir gecikme ile ilk render'ı yapıyoruz.
+                setTimeout(() => {
+                    filterAndRender();
+                }, 100);
+            }
+
+            // Sayfa tamamen yüklendiğinde uygulamayı başlat.
+            document.addEventListener('DOMContentLoaded', initialize);
+
+        })();
+    </script>
+</body>
+</html>
