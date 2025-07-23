@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profesyonel Yapay Zeka & Web Araçları Merkezi</title>
+    <meta name="description" content="Özenle seçilmiş, tamamen ücretsiz ve popüler yapay zeka araçları, asistanlar ve web servisleri tek bir yerde.">
     
-    <!-- Favicon Placeholders -->
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
 
     <!-- External Libraries -->
@@ -35,14 +36,14 @@
         .card-enter { animation: card-enter 0.5s ease-out forwards; }
 
         @keyframes fade-in {
-            from { opacity: 0; transform: scale(0.9); }
+            from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
         .fade-in { animation: fade-in 0.3s ease-in-out forwards; }
 
         @keyframes fade-out {
             from { opacity: 1; transform: scale(1); }
-            to { opacity: 0; transform: scale(0.9); }
+            to { opacity: 0; transform: scale(0.95); }
         }
         .fade-out { animation: fade-out 0.3s ease-in-out forwards; }
         
@@ -60,7 +61,7 @@
         <!-- Header Section -->
         <header class="text-center mb-8 md:mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500 mb-2">Yapay Zeka & Web Araçları Merkezi</h1>
-            <p class="text-slate-400 text-lg">Özenle seçilmiş, ücretsiz ve popüler araçlar.</p>
+            <p class="text-slate-400 text-lg">Özenle seçilmiş, tamamen ücretsiz araçlar.</p>
         </header>
 
         <!-- Search and Filter Section -->
@@ -80,7 +81,7 @@
         </div>
 
         <!-- Main Content Area -->
-        <main id="toolsContainer" class="flex flex-col gap-y-12">
+        <main id="toolsContainer" class="flex flex-col gap-y-12 transition-opacity duration-300">
             <!-- Tool groups or loading skeleton will be inserted here -->
         </main>
         
@@ -107,255 +108,283 @@
             'use strict';
 
             /**
-             * @typedef {object} Tool
-             * @property {number} id - Benzersiz kimlik
-             * @property {string} name - Aracın adı
-             * @property {string} category - Aracın kategorisi
-             * @property {string} description - Aracın açıklaması
-             * @property {string} url - Aracın web sitesi URL'si
-             * @property {string} icon - Aracın ikon URL'si
-             * @property {string[]} [tags] - Arama için ek anahtar kelimeler
+             * The main application module. Encapsulates all logic, state, and DOM interactions.
+             * @namespace AI_Tool_Hub_App
              */
+            const AI_Tool_Hub_App = {
+                /**
+                 * Application state
+                 * @property {string} activeCategory - The currently selected category filter.
+                 * @property {string} searchTerm - The current search term.
+                 */
+                state: {
+                    activeCategory: 'Tümü',
+                    searchTerm: '',
+                },
 
-            /** @type {Tool[]} */
-            const allTools = [
-                // Data source remains the same as the previous version, including the temporary email services.
-                { id: 1, name: "ChatGPT", category: "AI Asistanlar & Agent'lar", description: "OpenAI'dan sohbet tabanlı, çok yönlü ve güçlü bir kişisel yapay zeka asistanı.", url: "https://chat.openai.com/", icon: "https://placehold.co/100x100/10a37f/FFFFFF?text=GPT", tags: ['metin', 'sohbet', 'yazma'] },
-                { id: 2, name: "Google Gemini", category: "AI Asistanlar & Agent'lar", description: "Google'ın çok modlu yapay zeka modeli. Metin, kod, görsel anlama ve üretme yeteneği.", url: "https://gemini.google.com/", icon: "https://placehold.co/100x100/4285F4/FFFFFF?text=GMN", tags: ['multimodal', 'arama', 'görsel'] },
-                { id: 3, name: "Claude AI", category: "AI Asistanlar & Agent'lar", description: "Anthropic tarafından geliştirilen, güvenli ve yardımcı olmaya odaklanmış yapay zeka.", url: "https://claude.ai/", icon: "https://placehold.co/100x100/D97706/FFFFFF?text=CLD", tags: ['metin', 'güvenlik'] },
-                { id: 7, name: "Microsoft Designer", category: "Görsel Oluşturma", description: "DALL-E 3 destekli, metinden yüksek kaliteli görseller ve tasarımlar oluşturur.", url: "https://designer.microsoft.com/", icon: "https://placehold.co/100x100/0078D4/FFFFFF?text=DSN", tags: ['dall-e', 'resim', 'tasarım'] },
-                { id: 8, name: "Leonardo.Ai", category: "Görsel Oluşturma", description: "Oyun varlıkları, konsept sanatları ve daha fazlası için sanatçı odaklı görsel üretici.", url: "https://leonardo.ai/", icon: "https://placehold.co/100x100/8A2BE2/FFFFFF?text=LEO", tags: ['sanat', 'oyun', 'resim'] },
-                { id: 15, name: "RunwayML", category: "Video & Animasyon", description: "Metinden ve resimden video oluşturan, video düzenleme ve montaj için güçlü bir stüdyo.", url: "https://runwayml.com/", icon: "https://placehold.co/100x100/000000/FFFFFF?text=RNW", tags: ['video oluşturma', 'gen-2', 'edit'] },
-                { id: 19, name: "Suno", category: "Ses & Müzik", description: "Basit bir metin istemiyle vokal dahil olmak üzere tam şarkılar oluşturan bir müzik stüdyosu.", url: "https://suno.com/", icon: "https://placehold.co/100x100/FF4500/FFFFFF?text=SNO", tags: ['şarkı', 'müzik yapma', 'vokal'] },
-                { id: 29, name: "10 Minute Mail", category: "Geçici E-Posta Servisleri", description: "10 dakika sonra kendi kendini yok eden, tek kullanımlık, güvenli e-posta adresleri oluşturur.", url: "https://10minutemail.com/", icon: "https://placehold.co/100x100/D9534F/FFFFFF?text=10M", tags: ['email', 'privacy', 'spam'] },
-                { id: 30, name: "Temp Mail", category: "Geçici E-Posta Servisleri", description: "Spam'den kaçınmak için anonim ve tek kullanımlık e-posta adresleri sağlayan popüler bir servis.", url: "https://temp-mail.org/", icon: "https://placehold.co/100x100/337AB7/FFFFFF?text=TMP", tags: ['email', 'privacy', 'disposable'] },
-                // ... (Diğer tüm araçlar buraya eklenebilir)
-            ];
+                /**
+                 * Cached DOM element references for performance.
+                 */
+                dom: {},
 
-            // --- APPLICATION STATE ---
-            const appState = {
-                activeCategory: 'Tümü',
-                searchTerm: '',
-            };
-
-            // --- DOM ELEMENT REFERENCES ---
-            const dom = {
-                container: document.getElementById('toolsContainer'),
-                searchInput: document.getElementById('searchInput'),
-                categoryFilters: document.getElementById('categoryFilters'),
-                notFound: document.getElementById('notFoundMessage'),
-                scrollToTopBtn: document.getElementById('scrollToTopBtn'),
-                yearSpan: document.getElementById('year'),
-            };
-            
-            /**
-             * Creates a single tool card element.
-             * @param {Tool} tool - The tool object to create a card for.
-             * @param {number} index - The index for animation delay.
-             * @returns {HTMLElement} The created card element.
-             */
-            function createToolCard(tool, index) {
-                const card = document.createElement('div');
-                card.className = 'bg-slate-800 rounded-xl border border-slate-700 p-5 flex flex-col hover:border-sky-500 hover:scale-[1.02] transition-all duration-300 cursor-pointer card-enter focus-within:ring-2 focus-within:ring-sky-500';
-                card.style.animationDelay = `${index * 30}ms`;
-                
-                const cardLink = document.createElement('a');
-                cardLink.href = tool.url;
-                cardLink.target = '_blank';
-                cardLink.rel = 'noopener noreferrer';
-                cardLink.className = 'flex flex-col h-full focus:outline-none';
-                cardLink.setAttribute('aria-label', `${tool.name} aracını ziyaret et`);
-
-                cardLink.innerHTML = `
-                    <div class="flex items-center mb-4">
-                        <img src="${tool.icon}" alt="" class="w-14 h-14 rounded-lg mr-4 flex-shrink-0" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/100x100/1E293B/FFFFFF?text=??';">
-                        <div>
-                            <h3 class="text-xl font-bold text-slate-100">${tool.name}</h3>
-                        </div>
-                    </div>
-                    <p class="text-slate-400 flex-grow mb-4">${tool.description}</p>
-                    <span class="w-full mt-auto block text-center bg-slate-700 text-slate-300 font-semibold py-2 px-4 rounded-lg group-hover:bg-sky-600 group-hover:text-white transition-colors duration-200" aria-hidden="true">
-                        Aracı Ziyaret Et
-                    </span>
-                `;
-                card.appendChild(cardLink);
-                return card;
-            }
-
-            /**
-             * Renders all tools, grouped by category.
-             * @param {Tool[]} toolsToRender - Array of tool objects to display.
-             */
-            function renderTools(toolsToRender) {
-                dom.container.innerHTML = '';
-                dom.notFound.classList.add('hidden');
-
-                if (toolsToRender.length === 0) {
-                    dom.notFound.classList.remove('hidden');
-                    return;
-                }
-
-                const groupedTools = toolsToRender.reduce((acc, tool) => {
-                    (acc[tool.category] = acc[tool.category] || []).push(tool);
-                    return acc;
-                }, {});
-
-                const sortedCategories = Object.keys(groupedTools).sort();
-                const fragment = document.createDocumentFragment();
-
-                sortedCategories.forEach(category => {
-                    const section = document.createElement('section');
-                    section.setAttribute('aria-labelledby', `category-title-${category.replace(/\s/g, '-')}`);
+                /**
+                 * Data source for all tools.
+                 * @type {Array<object>}
+                 */
+                allTools: [
+                    // Kategori: AI Asistanlar & Agent'lar
+                    { id: 1, name: "ChatGPT", category: "AI Asistanlar & Agent'lar", description: "OpenAI'ın güçlü GPT-3.5 modelini kullanan, tamamen ücretsiz ve çok yönlü sohbet asistanı.", url: "https://chat.openai.com/", icon: "https://placehold.co/100x100/10a37f/FFFFFF?text=GPT", tags: ['metin', 'sohbet', 'yazma'] },
+                    { id: 2, name: "Google Gemini", category: "AI Asistanlar & Agent'lar", description: "Google'ın çok modlu yapay zeka modeli. Metin, kod ve görsel anlama yetenekleri ücretsizdir.", url: "https://gemini.google.com/", icon: "https://placehold.co/100x100/4285F4/FFFFFF?text=GMN", tags: ['multimodal', 'arama', 'görsel'] },
+                    { id: 3, name: "Claude AI", category: "AI Asistanlar & Agent'lar", description: "Anthropic tarafından geliştirilen, cömert bir ücretsiz kullanım sunan, güvenliğe odaklı yapay zeka.", url: "https://claude.ai/", icon: "https://placehold.co/100x100/D97706/FFFFFF?text=CLD", tags: ['metin', 'güvenlik'] },
+                    { id: 4, name: "Perplexity AI", category: "AI Asistanlar & Agent'lar", description: "Kaynaklar ve alıntılarla doğru cevaplar veren, ücretsiz ve güçlü bir konuşma arama motoru.", url: "https://www.perplexity.ai/", icon: "https://placehold.co/100x100/000000/FFFFFF?text=PPL", tags: ['arama', 'cevap'] },
+                    { id: 5, name: "AgentGPT", category: "AI Asistanlar & Agent'lar", description: "Kendi otonom yapay zeka agent'larınızı oluşturup görevlendirmenizi sağlayan açık kaynaklı bir platform.", url: "https://agentgpt.reworkd.ai/", icon: "https://placehold.co/100x100/1E90FF/FFFFFF?text=AGT", tags: ['otonom', 'görev'] },
                     
-                    const heading = document.createElement('h2');
-                    heading.id = `category-title-${category.replace(/\s/g, '-')}`;
-                    heading.className = 'text-2xl font-bold text-slate-200 border-b-2 border-slate-700 pb-2 mb-6';
-                    heading.textContent = category;
-                    section.appendChild(heading);
-
-                    const grid = document.createElement('div');
-                    grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+                    // Kategori: Görsel Oluşturma
+                    { id: 7, name: "Microsoft Designer", category: "Görsel Oluşturma", description: "DALL-E 3 destekli, tamamen ücretsiz, yüksek kaliteli görseller ve tasarımlar oluşturur.", url: "https://designer.microsoft.com/", icon: "https://placehold.co/100x100/0078D4/FFFFFF?text=DSN", tags: ['dall-e', 'resim', 'tasarım'] },
+                    { id: 8, name: "Leonardo.Ai", category: "Görsel Oluşturma", description: "Günlük yenilenen ücretsiz kredilerle, sanatçı odaklı, yüksek kaliteli görseller üretir.", url: "https://leonardo.ai/", icon: "https://placehold.co/100x100/8A2BE2/FFFFFF?text=LEO", tags: ['sanat', 'oyun', 'resim'] },
+                    { id: 9, name: "Ideogram", category: "Görsel Oluşturma", description: "Metinleri görsellere tutarlı bir şekilde yerleştirmesiyle ünlü, cömert ücretsiz kullanım sunan bir araç.", url: "https://ideogram.ai/", icon: "https://placehold.co/100x100/1A1A1A/FFFFFF?text=IDG", tags: ['tipografi', 'logo'] },
+                    { id: 10, name: "Canva", category: "Görsel Oluşturma", description: "Popüler tasarım platformu. Ücretsiz planı içinde yapay zeka destekli görsel oluşturma araçları sunar.", url: "https://www.canva.com/", icon: "https://placehold.co/100x100/00C4CC/FFFFFF?text=CVA", tags: ['tasarım', 'sosyal medya'] },
                     
-                    const toolsInCategory = groupedTools[category].sort((a, b) => a.name.localeCompare(b.name));
-                    toolsInCategory.forEach((tool, index) => {
-                        grid.appendChild(createToolCard(tool, index));
-                    });
-                    
-                    section.appendChild(grid);
-                    fragment.appendChild(section);
-                });
+                    // Kategori: Video & Animasyon
+                    { id: 15, name: "RunwayML", category: "Video & Animasyon", description: "Ücretsiz kredilerle metinden ve resimden video oluşturan, güçlü bir yapay zeka video stüdyosu.", url: "https://runwayml.com/", icon: "https://placehold.co/100x100/000000/FFFFFF?text=RNW", tags: ['video oluşturma', 'gen-2', 'edit'] },
+                    { id: 16, name: "Pika", category: "Video & Animasyon", description: "Fikirlerinizi saniyeler içinde videolara dönüştüren, ücretsiz kredi sunan popüler bir araç.", url: "https://pika.art/", icon: "https://placehold.co/100x100/FF00FF/FFFFFF?text=PKA", tags: ['metinden video', 'animasyon'] },
+                    { id: 17, name: "Luma AI Dream Machine", category: "Video & Animasyon", description: "Metinlerden yüksek kaliteli ve gerçekçi videolar oluşturan, cömert ücretsiz kullanım sunan yeni nesil araç.", url: "https://lumalabs.ai/dream-machine", icon: "https://placehold.co/100x100/6366F1/FFFFFF?text=LMA", tags: ['gerçekçi video', 'sinematik'] },
 
-                dom.container.appendChild(fragment);
-            }
+                    // Kategori: Ses & Müzik
+                    { id: 19, name: "Suno", category: "Ses & Müzik", description: "Günlük ücretsiz kredilerle, vokal dahil olmak üzere tam şarkılar oluşturan bir müzik stüdyosu.", url: "https://suno.com/", icon: "https://placehold.co/100x100/FF4500/FFFFFF?text=SNO", tags: ['şarkı', 'müzik yapma', 'vokal'] },
+                    { id: 20, name: "Udio", category: "Ses & Müzik", description: "Farklı türlerde harika şarkılar oluşturan, cömert bir ücretsiz kullanım hakkı sunan popüler araç.", url: "https://www.udio.com/", icon: "https://placehold.co/100x100/1DB954/FFFFFF?text=UDO", tags: ['müzik', 'beste'] },
+                    { id: 22, name: "Adobe Podcast", category: "Ses & Müzik", description: "Gürültülü ses kayıtlarını tamamen ücretsiz olarak stüdyo kalitesine getiren harika bir araç.", url: "https://podcast.adobe.com/enhance", icon: "https://placehold.co/100x100/FF0000/FFFFFF?text=ADBE", tags: ['ses temizleme', 'podcast'] },
 
-            /** Renders the category filter buttons. */
-            function renderCategoryFilters() {
-                const categories = ['Tümü', ...new Set(allTools.map(tool => tool.category))];
-                const sortedCategories = ['Tümü', ...categories.filter(c => c !== 'Tümü').sort()];
-                
-                dom.categoryFilters.innerHTML = '';
-                const fragment = document.createDocumentFragment();
-                
-                sortedCategories.forEach(category => {
-                    const button = document.createElement('button');
-                    button.textContent = category;
-                    button.dataset.category = category;
-                    button.className = `px-3 py-1.5 md:px-4 md:py-2 text-sm font-semibold rounded-lg transition-all duration-200 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900 ${
-                        appState.activeCategory === category 
-                        ? 'bg-sky-500 text-white shadow-md' 
-                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                    }`;
-                    fragment.appendChild(button);
-                });
-                dom.categoryFilters.appendChild(fragment);
-            }
-            
-            /** Renders a loading skeleton UI. */
-            function renderLoadingSkeleton() {
-                dom.container.innerHTML = '';
-                const fragment = document.createDocumentFragment();
-                for (let i = 0; i < 8; i++) {
-                    const skeletonCard = document.createElement('div');
-                    skeletonCard.className = 'bg-slate-800 rounded-xl p-5 skeleton';
-                    skeletonCard.innerHTML = `
-                        <div class="flex items-center mb-4">
-                            <div class="w-14 h-14 rounded-lg bg-slate-700 mr-4"></div>
-                            <div class="h-6 w-3/4 rounded bg-slate-700"></div>
-                        </div>
-                        <div class="h-4 w-full rounded bg-slate-700 mb-2"></div>
-                        <div class="h-4 w-5/6 rounded bg-slate-700"></div>
-                    `;
-                    fragment.appendChild(skeletonCard);
-                }
-                const grid = document.createElement('div');
-                grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
-                grid.appendChild(fragment);
-                dom.container.appendChild(grid);
-            }
+                    // Kategori: Üretkenlik & Sunum
+                    { id: 23, name: "Gamma", category: "Üretkenlik & Sunum", description: "Ücretsiz kredilerle metin istemlerinden saniyeler içinde sunumlar ve belgeler oluşturur.", url: "https://gamma.app/", icon: "https://placehold.co/100x100/6A0DAD/FFFFFF?text=GMA", tags: ['sunum', 'doküman'] },
+                    { id: 25, name: "Tome", category: "Üretkenlik & Sunum", description: "Fikirlerinizi görsel olarak etkileyici sunumlara dönüştüren, ücretsiz kredi sunan bir AI aracı.", url: "https://tome.app/", icon: "https://placehold.co/100x100/FF69B4/FFFFFF?text=TME", tags: ['sunum', 'hikaye anlatımı'] },
 
-            /** Filters and renders tools based on the current app state. */
-            function handleFilterAndRender() {
-                renderLoadingSkeleton();
-                setTimeout(() => {
-                    let filteredTools = allTools;
-                    if (appState.activeCategory !== 'Tümü') {
-                        filteredTools = filteredTools.filter(tool => tool.category === appState.activeCategory);
+                    // Kategori: Geçici E-Posta Servisleri
+                    { id: 29, name: "10 Minute Mail", category: "Geçici E-Posta Servisleri", description: "10 dakika sonra kendi kendini yok eden, tek kullanımlık, güvenli e-posta adresleri oluşturur.", url: "https://10minutemail.com/", icon: "https://placehold.co/100x100/D9534F/FFFFFF?text=10M", tags: ['email', 'privacy', 'spam'] },
+                    { id: 30, name: "Temp Mail", category: "Geçici E-Posta Servisleri", description: "Spam'den kaçınmak için anonim ve tek kullanımlık e-posta adresleri sağlayan popüler bir servis.", url: "https://temp-mail.org/", icon: "https://placehold.co/100x100/337AB7/FFFFFF?text=TMP", tags: ['email', 'privacy', 'disposable'] },
+                    { id: 31, name: "Guerrilla Mail", category: "Geçici E-Posta Servisleri", description: "Gelen e-postaları 1 saat boyunca tutan, uzun süredir hizmet veren güvenilir bir sağlayıcı.", url: "https://www.guerrillamail.com/", icon: "https://placehold.co/100x100/5CB85C/FFFFFF?text=GRL", tags: ['geçici posta', 'güvenlik'] }
+                ],
+
+                /**
+                 * HTML template generation functions.
+                 */
+                templates: {
+                    toolCard(tool, index) {
+                        return `
+                            <div class="bg-slate-800 rounded-xl border border-slate-700 p-5 flex flex-col hover:border-sky-500 hover:scale-[1.02] transition-all duration-300 cursor-pointer card-enter focus-within:ring-2 focus-within:ring-sky-500" style="animation-delay: ${index * 30}ms;">
+                                <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="flex flex-col h-full focus:outline-none group" aria-label="${tool.name} aracını ziyaret et">
+                                    <div class="flex items-center mb-4">
+                                        <img src="${tool.icon}" alt="" class="w-14 h-14 rounded-lg mr-4 flex-shrink-0" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/100x100/1E293B/FFFFFF?text=??';">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-slate-100">${tool.name}</h3>
+                                        </div>
+                                    </div>
+                                    <p class="text-slate-400 flex-grow mb-4">${tool.description}</p>
+                                    <span class="w-full mt-auto block text-center bg-slate-700 text-slate-300 font-semibold py-2 px-4 rounded-lg group-hover:bg-sky-600 group-hover:text-white transition-colors duration-200" aria-hidden="true">
+                                        Aracı Ziyaret Et
+                                    </span>
+                                </a>
+                            </div>`;
+                    },
+                    categoryGroup(category, toolsHTML) {
+                        const categoryId = `category-title-${category.replace(/[^a-zA-Z0-9]/g, '-')}`;
+                        return `
+                            <section aria-labelledby="${categoryId}">
+                                <h2 id="${categoryId}" class="text-2xl font-bold text-slate-200 border-b-2 border-slate-700 pb-2 mb-6">
+                                    ${category}
+                                </h2>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    ${toolsHTML}
+                                </div>
+                            </section>`;
+                    },
+                    loadingSkeleton() {
+                        const skeletonCard = `
+                            <div class="bg-slate-800 rounded-xl p-5 skeleton">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-14 h-14 rounded-lg bg-slate-700 mr-4"></div>
+                                    <div class="h-6 w-3/4 rounded bg-slate-700"></div>
+                                </div>
+                                <div class="h-4 w-full rounded bg-slate-700 mb-2"></div>
+                                <div class="h-4 w-5/6 rounded bg-slate-700"></div>
+                            </div>`;
+                        return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">${skeletonCard.repeat(8)}</div>`;
                     }
-                    if (appState.searchTerm) {
-                        filteredTools = filteredTools.filter(tool => 
-                            tool.name.toLowerCase().includes(appState.searchTerm) || 
-                            tool.description.toLowerCase().includes(appState.searchTerm) ||
-                            (tool.tags && tool.tags.some(tag => tag.includes(appState.searchTerm)))
+                },
+
+                /**
+                 * Renders all tools, grouped by category, into the main container.
+                 */
+                render() {
+                    const toolsToRender = this.filterTools();
+                    this.dom.container.classList.add('fade-out');
+
+                    setTimeout(() => {
+                        this.dom.container.innerHTML = '';
+                        this.dom.notFound.classList.add('hidden');
+
+                        if (toolsToRender.length === 0) {
+                            this.dom.notFound.classList.remove('hidden');
+                        } else {
+                            const groupedTools = this.groupToolsByCategory(toolsToRender);
+                            const sortedCategories = Object.keys(groupedTools).sort();
+                            
+                            const finalHTML = sortedCategories.map(category => {
+                                const toolsInCategory = groupedTools[category].sort((a, b) => a.name.localeCompare(b.name));
+                                const toolsHTML = toolsInCategory.map((tool, index) => this.templates.toolCard(tool, index)).join('');
+                                return this.templates.categoryGroup(category, toolsHTML);
+                            }).join('');
+
+                            this.dom.container.innerHTML = finalHTML;
+                        }
+                        this.dom.container.classList.remove('fade-out');
+                    }, 300); // Wait for fade-out animation to complete
+                },
+                
+                /** Renders the category filter buttons. */
+                renderCategoryFilters() {
+                    const categories = ['Tümü', ...new Set(this.allTools.map(tool => tool.category))];
+                    const sortedCategories = ['Tümü', ...categories.filter(c => c !== 'Tümü').sort()];
+                    
+                    this.dom.categoryFilters.innerHTML = sortedCategories.map(category => {
+                        const isActive = this.state.activeCategory === category;
+                        const activeClasses = 'bg-sky-500 text-white shadow-md';
+                        const inactiveClasses = 'bg-slate-700 text-slate-300 hover:bg-slate-600';
+                        return `
+                            <a href="#${this.utils.slugify(category)}" 
+                               data-category="${category}" 
+                               class="px-3 py-1.5 md:px-4 md:py-2 text-sm font-semibold rounded-lg transition-all duration-200 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 focus:ring-offset-slate-900 ${isActive ? activeClasses : inactiveClasses}">
+                                ${category}
+                            </a>`;
+                    }).join('');
+                },
+
+                /** Filters tools based on the current state. */
+                filterTools() {
+                    let filtered = this.allTools;
+                    if (this.state.activeCategory !== 'Tümü') {
+                        filtered = filtered.filter(tool => tool.category === this.state.activeCategory);
+                    }
+                    if (this.state.searchTerm) {
+                        const term = this.state.searchTerm;
+                        filtered = filtered.filter(tool => 
+                            tool.name.toLowerCase().includes(term) || 
+                            tool.description.toLowerCase().includes(term) ||
+                            (tool.tags && tool.tags.some(tag => tag.includes(term)))
                         );
                     }
-                    renderTools(filteredTools);
-                }, 300); // Simulate loading and prevent jarring UI updates
-            }
+                    return filtered;
+                },
 
-            /**
-             * Creates a debounced function that delays invoking the callback.
-             * @param {Function} callback - The function to debounce.
-             * @param {number} delay - The number of milliseconds to delay.
-             * @returns {Function} The new debounced function.
-             */
-            function debounce(callback, delay = 300) {
-                let timeoutId;
-                return (...args) => {
-                    clearTimeout(timeoutId);
-                    timeoutId = setTimeout(() => {
-                        callback.apply(null, args);
-                    }, delay);
-                };
-            }
+                /** Groups an array of tools by their category. */
+                groupToolsByCategory(tools) {
+                    return tools.reduce((acc, tool) => {
+                        (acc[tool.category] = acc[tool.category] || []).push(tool);
+                        return acc;
+                    }, {});
+                },
 
-            /** Initializes the application. */
-            function initialize() {
-                // Check for essential DOM elements
-                if (!dom.container || !dom.searchInput || !dom.categoryFilters || !dom.notFound || !dom.scrollToTopBtn || !dom.yearSpan) {
-                    console.error("Uygulama için gerekli HTML elementlerinden biri bulunamadı.");
-                    return;
+                /**
+                 * Utility functions.
+                 */
+                utils: {
+                    debounce(callback, delay = 300) {
+                        let timeoutId;
+                        return (...args) => {
+                            clearTimeout(timeoutId);
+                            timeoutId = setTimeout(() => callback.apply(null, args), delay);
+                        };
+                    },
+                    slugify(text) {
+                        if (text === 'Tümü') return '';
+                        return text.toString().toLowerCase()
+                            .replace(/\s+/g, '-')           // Replace spaces with -
+                            .replace(/&/g, '-and-')         // Replace & with 'and'
+                            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                            .replace(/\-\-+/g, '-');        // Replace multiple - with single -
+                    },
+                    getCategoryFromHash() {
+                        const hash = window.location.hash.substring(1);
+                        if (!hash) return 'Tümü';
+                        const categories = ['Tümü', ...new Set(this.allTools.map(tool => tool.category))];
+                        const foundCategory = categories.find(cat => this.slugify(cat) === hash);
+                        return foundCategory || 'Tümü';
+                    }
+                },
+
+                /**
+                 * Sets up all event listeners for the application.
+                 */
+                bindEvents() {
+                    const debouncedSearch = this.utils.debounce(() => {
+                        this.state.searchTerm = this.dom.searchInput.value.toLowerCase().trim();
+                        this.render();
+                    });
+                    this.dom.searchInput.addEventListener('input', debouncedSearch);
+
+                    this.dom.categoryFilters.addEventListener('click', (e) => {
+                        const link = e.target.closest('a');
+                        if (link) {
+                            e.preventDefault();
+                            const category = link.dataset.category;
+                            window.location.hash = this.utils.slugify(category);
+                        }
+                    });
+
+                    window.addEventListener('hashchange', () => {
+                        this.state.activeCategory = this.utils.getCategoryFromHash.call(this);
+                        this.renderCategoryFilters();
+                        this.render();
+                    });
+
+                    this.dom.scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0 }));
+
+                    window.addEventListener('scroll', () => {
+                        const shouldBeVisible = window.scrollY > 300;
+                        const isVisible = !this.dom.scrollToTopBtn.classList.contains('hidden');
+                        if (shouldBeVisible && !isVisible) {
+                            this.dom.scrollToTopBtn.classList.remove('hidden', 'fade-out');
+                            this.dom.scrollToTopBtn.classList.add('fade-in');
+                        } else if (!shouldBeVisible && isVisible) {
+                            this.dom.scrollToTopBtn.classList.remove('fade-in');
+                            this.dom.scrollToTopBtn.classList.add('fade-out');
+                            setTimeout(() => this.dom.scrollToTopBtn.classList.add('hidden'), 300);
+                        }
+                    }, { passive: true });
+                },
+
+                /**
+                 * Initializes the application.
+                 */
+                init() {
+                    // Cache DOM elements
+                    this.dom = {
+                        container: document.getElementById('toolsContainer'),
+                        searchInput: document.getElementById('searchInput'),
+                        categoryFilters: document.getElementById('categoryFilters'),
+                        notFound: document.getElementById('notFoundMessage'),
+                        scrollToTopBtn: document.getElementById('scrollToTopBtn'),
+                        yearSpan: document.getElementById('year'),
+                    };
+                    
+                    if (!this.dom.container) {
+                        console.error("Uygulama başlatılamadı: Ana konteyner bulunamadı.");
+                        return;
+                    }
+
+                    this.dom.yearSpan.textContent = new Date().getFullYear();
+                    
+                    // Set initial state from URL hash
+                    this.state.activeCategory = this.utils.getCategoryFromHash.call(this);
+
+                    this.bindEvents();
+                    this.renderCategoryFilters();
+                    this.render();
                 }
-
-                // Set dynamic content
-                dom.yearSpan.textContent = new Date().getFullYear();
-
-                // Setup event listeners
-                const debouncedSearch = debounce(() => {
-                    appState.searchTerm = dom.searchInput.value.toLowerCase().trim();
-                    handleFilterAndRender();
-                });
-                dom.searchInput.addEventListener('input', debouncedSearch);
-
-                dom.categoryFilters.addEventListener('click', (e) => {
-                    if (e.target.tagName === 'BUTTON') {
-                        appState.activeCategory = e.target.dataset.category;
-                        renderCategoryFilters(); // Update button styles
-                        handleFilterAndRender();
-                    }
-                });
-
-                dom.scrollToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0 }));
-
-                window.addEventListener('scroll', () => {
-                    const shouldBeVisible = window.scrollY > 300;
-                    const isVisible = !dom.scrollToTopBtn.classList.contains('hidden');
-                    if (shouldBeVisible && !isVisible) {
-                        dom.scrollToTopBtn.classList.remove('hidden', 'fade-out');
-                        dom.scrollToTopBtn.classList.add('fade-in');
-                    } else if (!shouldBeVisible && isVisible) {
-                        dom.scrollToTopBtn.classList.remove('fade-in');
-                        dom.scrollToTopBtn.classList.add('fade-out');
-                        setTimeout(() => dom.scrollToTopBtn.classList.add('hidden'), 300);
-                    }
-                }, { passive: true });
-
-                // Initial render
-                renderCategoryFilters();
-                handleFilterAndRender();
-            }
+            };
 
             // Start the app once the DOM is fully loaded.
-            document.addEventListener('DOMContentLoaded', initialize);
+            document.addEventListener('DOMContentLoaded', () => AI_Tool_Hub_App.init());
 
         })();
     </script>
