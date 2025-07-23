@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Yapay Zeka Araçları Merkezi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* bg-slate-900 */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* bg-slate-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; /* bg-slate-600 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* bg-slate-500 */
+        }
+        .card-enter {
+            animation: card-enter 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes card-enter {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Header Section -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500 mb-2">Yapay Zeka Araçları Merkezi</h1>
+            <p class="text-slate-400 text-lg">Tüm ücretsiz ve popüler yapay zeka araçları tek bir yerde.</p>
+        </header>
+
+        <!-- Search and Filter Section -->
+        <div class="mb-8 md:mb-10 sticky top-4 z-10 bg-slate-900/80 backdrop-blur-sm p-4 rounded-xl border border-slate-700 shadow-lg">
+            <div class="flex flex-col gap-4">
+                <!-- Search Input -->
+                <div class="relative flex-grow">
+                    <input type="text" id="searchInput" placeholder="Bir araç veya kategori ara (örn: Avatar, Reklam)..." class="w-full bg-slate-800 border border-slate-600 rounded-lg py-3 pl-10 pr-4 focus:ring-2 focus:ring-sky-500 focus:outline-none transition placeholder-slate-500">
+                    <svg class="w-5 h-5 text-slate-400 absolute top-1/2 left-3 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
+                <!-- Category Filters -->
+                <div id="categoryFilters" class="flex-shrink-0 flex items-center justify-start flex-wrap gap-2">
+                    <!-- Filter buttons will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Tools Grid -->
+        <main id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Tool cards will be inserted here by JavaScript -->
+        </main>
+        
+        <!-- Not Found Message -->
+        <div id="notFoundMessage" class="hidden text-center py-16">
+            <h3 class="text-2xl font-semibold text-slate-300">Sonuç Bulunamadı</h3>
+            <p class="text-slate-500 mt-2">Arama kriterlerinize uygun bir araç bulunamadı.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA: Expanded List of AI Tools ---
+        const aiTools = [
+            // --- AI Asistanlar & Agent'lar ---
+            {
+                name: "ChatGPT",
+                category: "AI Asistanlar & Agent'lar",
+                description: "OpenAI'dan sohbet tabanlı, çok yönlü ve güçlü bir kişisel yapay zeka asistanı.",
+                url: "https://chat.openai.com/",
+                icon: "https://placehold.co/100x100/10a37f/FFFFFF?text=GPT"
+            },
+            {
+                name: "Google Gemini",
+                category: "AI Asistanlar & Agent'lar",
+                description: "Google'ın çok modlu yapay zeka modeli. Metin, kod, görsel anlama ve üretme yeteneği.",
+                url: "https://gemini.google.com/",
+                icon: "https://placehold.co/100x100/4285F4/FFFFFF?text=GMN"
+            },
+            {
+                name: "Claude AI",
+                category: "AI Asistanlar & Agent'lar",
+                description: "Anthropic tarafından geliştirilen, güvenli ve yardımcı olmaya odaklanmış yapay zeka.",
+                url: "https://claude.ai/",
+                icon: "https://placehold.co/100x100/D97706/FFFFFF?text=CLD"
+            },
+            {
+                name: "Perplexity AI",
+                category: "AI Asistanlar & Agent'lar",
+                description: "Kaynaklar ve alıntılarla doğru cevaplar veren konuşma tabanlı bir arama motoru.",
+                url: "https://www.perplexity.ai/",
+                icon: "https://placehold.co/100x100/000000/FFFFFF?text=PPL"
+            },
+            {
+                name: "AgentGPT",
+                category: "AI Asistanlar & Agent'lar",
+                description: "Kendi otonom yapay zeka agent'larınızı oluşturun, yapılandırın ve görevler için görevlendirin.",
+                url: "https://agentgpt.reworkd.ai/",
+                icon: "https://placehold.co/100x100/1E90FF/FFFFFF?text=AGT"
+            },
+            {
+                name: "MultiOn",
+                category: "AI Asistanlar & Agent'lar",
+                description: "Web sitelerindeki görevleri sizin için otomatikleştiren bir yapay zeka web agent'ı.",
+                url: "https://www.multion.ai/",
+                icon: "https://placehold.co/100x100/FF6347/FFFFFF?text=MON"
+            },
+            // --- Görsel Oluşturma ---
+            {
+                name: "Microsoft Designer",
+                category: "Görsel Oluşturma",
+                description: "DALL-E 3 destekli, metinden yüksek kaliteli görseller ve tasarımlar oluşturur.",
+                url: "https://designer.microsoft.com/",
+                icon: "https://placehold.co/100x100/0078D4/FFFFFF?text=DSN"
+            },
+            {
+                name: "Leonardo.Ai",
+                category: "Görsel Oluşturma",
+                description: "Oyun varlıkları, konsept sanatları ve daha fazlası için sanatçı odaklı görsel üretici.",
+                url: "https://leonardo.ai/",
+                icon: "https://placehold.co/100x100/8A2BE2/FFFFFF?text=LEO"
+            },
+             {
+                name: "Ideogram",
+                category: "Görsel Oluşturma",
+                description: "Metinleri görsellerin içine tutarlı bir şekilde yerleştirmesiyle ünlü görsel oluşturucu.",
+                url: "https://ideogram.ai/",
+                icon: "https://placehold.co/100x100/1A1A1A/FFFFFF?text=IDG"
+            },
+            {
+                name: "SeaArt.ai",
+                category: "Görsel Oluşturma",
+                description: "Cömert ücretsiz kullanım hakkı sunan, anime ve gerçekçi tarzda görseller üreten platform.",
+                url: "https://www.seaart.ai/",
+                icon: "https://placehold.co/100x100/3B82F6/FFFFFF?text=SEA"
+            },
+            // --- Avatar & Reklam Üretimi ---
+            {
+                name: "Canva AI",
+                category: "Avatar & Reklam Üretimi",
+                description: "Tasarım platformu içinde reklam görselleri, sosyal medya gönderileri ve avatarlar oluşturun.",
+                url: "https://www.canva.com/ai-tools/",
+                icon: "https://placehold.co/100x100/00C4CC/FFFFFF?text=CVA"
+            },
+            {
+                name: "Synthesia",
+                category: "Avatar & Reklam Üretimi",
+                description: "Metni profesyonel görünümlü, AI avatarların (mankenlerin) sunduğu videolara dönüştürün.",
+                url: "https://www.synthesia.io/",
+                icon: "https://placehold.co/100x100/4D4DFF/FFFFFF?text=SYN"
+            },
+            {
+                name: "Fotor AI Avatar",
+                category: "Avatar & Reklam Üretimi",
+                description: "Fotoğraflarınızdan veya metinlerden çeşitli stillerde sanatsal ve kurumsal avatarlar oluşturun.",
+                url: "https://www.fotor.com/features/ai-avatar-generator/",
+                icon
